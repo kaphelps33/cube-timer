@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
-import { renderToString } from "react-dom/server";
 
 const scrambleMoves = ["R", "L", "F", "B", "D", "U"];
 const scrambleMoveModifier = ["", "2", "'"];
@@ -14,9 +13,9 @@ const generateScramble = () => {
       scrambleMoveModifier[
         Math.floor(Math.random() * scrambleMoveModifier.length)
       ];
-    scrambleArray[i] = nextTurn + nextModifier;
+    scrambleArray[i] = nextTurn + nextModifier + " ";
   }
-  return scrambleArray.flatMap((val, i) => (i === 0 ? [val] : [" ", val]));
+  return scrambleArray;
 };
 
 function App() {
@@ -25,7 +24,6 @@ function App() {
   const [status, setStatus] = useState("idle");
   const [solves, setSolves] = useState([]);
   const [scramble, setScramble] = useState(generateScramble);
-  const timeRef = useRef(null);
 
   useEffect(() => {
     let intervalId;
@@ -99,12 +97,19 @@ function App() {
         <h1>Cube Timer</h1>
       </header>
       <main>
-        <section>{scramble}</section>
+        <section>
+          {scramble}
+          <small>
+            Note: This is a filler scramble, it is not WCA legal...yet
+          </small>
+        </section>
         <section>
           <h2 className={status == "primed" ? "timer-primed" : "timer"}>
             {timePassed.toFixed(2)}
           </h2>
-          <p>Press and hold space to start</p>
+          {status == "idle" ? (
+            <p>Press, hold, and release space to start</p>
+          ) : null}
         </section>
         <section>
           <h3>Recent Times</h3>
