@@ -33,12 +33,10 @@ function App() {
         }
         // if the timer is not running, press and hold will prime it to run
         if (status == "idle") {
-          console.log("Status is idle, setting timer to primed");
           setStatus("primed");
         }
         // if the timer is running, pressing the keyboard will stop it
         else if (status == "running") {
-          console.log("Stats is running, setting to idle");
           setStatus("idle");
         }
       }
@@ -78,7 +76,9 @@ function App() {
       </header>
       <main>
         <section>
-          <h2>{timePassed.toFixed(2)}</h2>
+          <h2 className={status == "primed" ? "timer-primed" : "timer"}>
+            {timePassed.toFixed(2)}
+          </h2>
           <p>Press and hold space to start</p>
         </section>
       </main>
