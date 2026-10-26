@@ -1,11 +1,29 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
+const scrambleMoves = ["R", "L", "F", "B", "D", "U"];
+const scrambleMoveModifier = ["", "2", "'"];
+
+const generateScramble = () => {
+  let scrambleArray = [];
+  for (let i = 0; i < 20; i++) {
+    let nextTurn =
+      scrambleMoves[Math.floor(Math.random() * scrambleMoves.length)];
+    let nextModifier =
+      scrambleMoveModifier[
+        Math.floor(Math.random() * scrambleMoveModifier.length)
+      ];
+    scrambleArray[i] = nextTurn + nextModifier;
+  }
+  return scrambleArray.flatMap((val, i) => (i === 0 ? [val] : [" ", val]));
+};
+
 function App() {
   const [startTime, setStartTime] = useState(null);
   const [now, setNow] = useState(null);
   const [status, setStatus] = useState("idle");
   const [solves, setSolves] = useState([]);
+  const [scramble, setScramble] = useState(generateScramble);
 
   useEffect(() => {
     let intervalId;
@@ -41,6 +59,7 @@ function App() {
           let solveTime = (now - startTime) / 1000;
           setStatus("idle");
           setSolves((prevsolves) => [...prevsolves, solveTime.toFixed(2)]);
+          setScramble(generateScramble());
         }
       }
     };
@@ -78,6 +97,7 @@ function App() {
         <h1>Cube Timer</h1>
       </header>
       <main>
+        <section>{scramble}</section>
         <section>
           <h2 className={status == "primed" ? "timer-primed" : "timer"}>
             {timePassed.toFixed(2)}
@@ -86,13 +106,14 @@ function App() {
         </section>
         <section>
           <h3>Recent Times</h3>
-          {
-            <ul>
-              {solves.map((solve) => (
-                <li>{solve}</li>
+          <ul>
+            {solves
+              .slice()
+              .reverse()
+              .map((solve, index) => (
+                <li key={index}>{solve}</li>
               ))}
-            </ul>
-          }
+          </ul>
         </section>
       </main>
     </>
