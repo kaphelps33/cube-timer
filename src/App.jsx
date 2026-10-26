@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
+import { renderToString } from "react-dom/server";
 
 const scrambleMoves = ["R", "L", "F", "B", "D", "U"];
 const scrambleMoveModifier = ["", "2", "'"];
@@ -24,6 +25,7 @@ function App() {
   const [status, setStatus] = useState("idle");
   const [solves, setSolves] = useState([]);
   const [scramble, setScramble] = useState(generateScramble);
+  const timeRef = useRef(null);
 
   useEffect(() => {
     let intervalId;
@@ -56,9 +58,9 @@ function App() {
         }
         // if the timer is running, pressing the keyboard will stop it
         else if (status == "running") {
-          let solveTime = (now - startTime) / 1000;
+          let solveTime = document.querySelector("h2").innerHTML;
           setStatus("idle");
-          setSolves((prevsolves) => [...prevsolves, solveTime.toFixed(2)]);
+          setSolves((prevsolves) => [...prevsolves, solveTime]);
           setScramble(generateScramble());
         }
       }
