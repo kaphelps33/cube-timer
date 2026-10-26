@@ -1,20 +1,21 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
   const [startTime, setStartTime] = useState(null);
   const [now, setNow] = useState(null);
   const [status, setStatus] = useState("idle");
-  const intervalRef = useRef(null);
+  const [solves, setSolves] = useState([]);
 
   useEffect(() => {
+    let intervalId;
     if (status == "running") {
-      intervalRef.current = setInterval(() => {
+      intervalId = setInterval(() => {
         setNow(performance.now());
       }, 10);
     }
     // Cleanup
-    return () => clearInterval(intervalRef.current);
+    return () => clearInterval(intervalId);
   }, [status]);
 
   let timePassed = 0;
@@ -37,7 +38,9 @@ function App() {
         }
         // if the timer is running, pressing the keyboard will stop it
         else if (status == "running") {
+          let solveTime = (now - startTime) / 1000;
           setStatus("idle");
+          setSolves((prevsolves) => [...prevsolves, solveTime.toFixed(2)]);
         }
       }
     };
@@ -48,7 +51,7 @@ function App() {
     return () => {
       window.removeEventListener("keydown", handleKeyboardDown);
     };
-  }, [status]);
+  }, [status, now, startTime]);
 
   useEffect(() => {
     const handleKeyboardUp = (event) => {
@@ -80,6 +83,16 @@ function App() {
             {timePassed.toFixed(2)}
           </h2>
           <p>Press and hold space to start</p>
+        </section>
+        <section>
+          <h3>Recent Times</h3>
+          {
+            <ul>
+              {solves.map((solve) => (
+                <li>{solve}</li>
+              ))}
+            </ul>
+          }
         </section>
       </main>
     </>
