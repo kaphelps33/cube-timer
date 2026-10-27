@@ -1,6 +1,6 @@
 function Timer({ timePassed, status }) {
   return (
-    <section>
+    <section className="timerContainer">
       <h2 className={status == "primed" ? "timer-primed" : "timer"}>
         {timePassed.toFixed(2)}
       </h2>

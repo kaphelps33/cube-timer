@@ -82,6 +82,7 @@ function App() {
     <>
       <header>
         <h1>Cube Timer</h1>
+        <p>3x3x3</p>
       </header>
       <main>
         <Scramble scramble={scramble} />
