@@ -41,6 +41,17 @@ ul {
   padding: none;
 }
 
+table {
+  table-layout: fixed;
+  margin: 10px auto;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.3em;
+}
+
 .scramble {
   background-color: #edede9;
   width: 95%;
@@ -66,4 +77,9 @@ ul {
 
 .timer-primed {
   color: lime;
+}
+
+.time-row:hover {
+  background-color: #edede9;
+  cursor: pointer;
 }

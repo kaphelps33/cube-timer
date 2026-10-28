@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import SolveHistory from "./components/SolveHistory";
 import Timer from "./components/Timer";
 import Scramble from "./components/Scramble";
 import generateScramble from "./utilities/scrambler";
 import "./App.css";
+
+let nextSolveId = 0;
 
 function App() {
   const [startTime, setStartTime] = useState(null);
@@ -12,15 +14,16 @@ function App() {
   const [solves, setSolves] = useState([]);
   const [scramble, setScramble] = useState(generateScramble);
 
+  const intervalIdRef = useRef(null);
+
   useEffect(() => {
-    let intervalId;
     if (status == "running") {
-      intervalId = setInterval(() => {
+      intervalIdRef.current = setInterval(() => {
         setNow(performance.now());
       }, 10);
     }
     // Cleanup
-    return () => clearInterval(intervalId);
+    return () => clearInterval(intervalIdRef.current);
   }, [status]);
 
   let timePassed = 0;
@@ -28,6 +31,7 @@ function App() {
     timePassed = (now - startTime) / 1000;
   }
 
+  // handles pressing keyboard down; stopping the timer or priming it
   useEffect(() => {
     const handleKeyboardDown = (event) => {
       if (event.code === "Space" || event.code === " ") {
@@ -43,9 +47,14 @@ function App() {
         }
         // if the timer is running, pressing the keyboard will stop it
         else if (status === "running") {
-          let solveTime = document.querySelector("h2").innerHTML;
+          const solve = {
+            id: (nextSolveId += 1),
+            time: timePassed.toFixed(2),
+            penalty: "",
+            scramble: scramble
+          };
           setStatus("idle");
-          setSolves((prevsolves) => [...prevsolves, solveTime]);
+          setSolves((prevsolves) => [...prevsolves, solve]);
           setScramble(generateScramble());
         }
       }
@@ -57,7 +66,7 @@ function App() {
     return () => {
       window.removeEventListener("keydown", handleKeyboardDown);
     };
-  }, [status]);
+  }, [status, scramble, timePassed]);
 
   useEffect(() => {
     const handleKeyboardUp = (event) => {
