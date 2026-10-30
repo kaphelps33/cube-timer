@@ -1,4 +1,11 @@
+import { useState } from "react";
+import { createPortal } from "react-dom";
+import ModalContent from "./ModalContent";
+
+let nextSolveNumber = 0;
+
 function SolveHistory({ solves }) {
+  const [showModal, setShowModal] = useState(false);
   return (
     <section>
       <h3>Recent Times</h3>
@@ -25,8 +32,12 @@ function SolveHistory({ solves }) {
             .slice()
             .reverse()
             .map((solve) => (
-              <tr key={solve.id} className="time-row">
-                <td>{solve.id}</td>
+              <tr
+                key={solve.id}
+                className="time-row"
+                onClick={() => setShowModal(true)}
+              >
+                <td>{solve.solveNumber}</td>
                 <td>{solve.time}</td>
                 <td>fill me in</td>
                 <td>fill me in</td>
@@ -34,6 +45,21 @@ function SolveHistory({ solves }) {
             ))}
         </tbody>
       </table>
+      {showModal &&
+        createPortal(
+          <ModalContent onClose={() => setShowModal(false)} />,
+          // <div className="modal-overlay">
+          //   <div className="modal-content">
+          //     <h3>Edit Solve</h3>
+          //     <div>
+          //       <button>+2</button>
+          //       <button>DNF</button>
+          //     </div>
+          //     <button onClick={() => setShowModal(false)}>Close</button>
+          //   </div>
+          // </div>,
+          document.body
+        )}
     </section>
   );
 }

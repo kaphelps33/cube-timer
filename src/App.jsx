@@ -49,6 +49,7 @@ function App() {
         else if (status === "running") {
           const solve = {
             id: (nextSolveId += 1),
+            solveNumber: (nextSolveId += 1),
             time: timePassed.toFixed(2),
             penalty: "",
             scramble: scramble
