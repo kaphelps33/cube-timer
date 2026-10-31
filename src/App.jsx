@@ -5,8 +5,6 @@ import Scramble from "./components/Scramble";
 import generateScramble from "./utilities/scrambler";
 import "./App.css";
 
-let nextSolveId = 0;
-
 function App() {
   const [startTime, setStartTime] = useState(null);
   const [now, setNow] = useState(null);
@@ -48,9 +46,8 @@ function App() {
         // if the timer is running, pressing the keyboard will stop it
         else if (status === "running") {
           const solve = {
-            id: (nextSolveId += 1),
-            solveNumber: (nextSolveId += 1),
-            time: timePassed.toFixed(2),
+            id: crypto.randomUUID(),
+            time: ((performance.now() - startTime) / 1000).toFixed(2),
             penalty: "",
             scramble: scramble
           };
@@ -67,7 +64,7 @@ function App() {
     return () => {
       window.removeEventListener("keydown", handleKeyboardDown);
     };
-  }, [status, scramble, timePassed]);
+  }, [status, scramble, startTime]);
 
   useEffect(() => {
     const handleKeyboardUp = (event) => {
